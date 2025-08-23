@@ -1,0 +1,36 @@
+{
+  "name": "notion-kit",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "bin": {
+    "notion-kit": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fankaidev/notion-kit.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fankaidev/notion-kit/issues"
+  },
+  "homepage": "https://github.com/fankaidev/notion-kit#readme",
+  "description": "",
+  "dependencies": {
+    "@notionhq/client": "^4.0.2",
+    "commander": "^14.0.0",
+    "notion-to-md": "4.0.0-alpha.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
