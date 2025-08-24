@@ -1,44 +1,68 @@
 #!/usr/bin/env node
 
-import { Client } from '@notionhq/client';
 import { Command } from 'commander';
-import { NotionConverter } from 'notion-to-md';
-import { DefaultExporter } from 'notion-to-md/plugins/exporter';
+import { 
+  getPage, 
+  listPages, 
+  search, 
+  getPageInfo, 
+  getDbInfo 
+} from './commands';
 
 const program = new Command();
 
-async function convertPageToMarkdown(pageId: string) {
-  const notionToken = process.env.NOTION_TOKEN;
-
-  if (!notionToken) {
-    console.error('Error: NOTION_TOKEN environment variable is required');
-    process.exit(1);
-  }
-
-  try {
-    const notion = new Client({ auth: notionToken });
-    const exporter = new DefaultExporter({
-      outputType: 'stdout',
-    });
-    process.env.NODE_ENV = 'production';
-    const originalDebug = console.debug;
-    console.debug = () => { }; // Disable all console.debug output
-    const n2m = new NotionConverter(notion).withExporter(exporter);
-    await n2m.convert(pageId);
-    console.debug = originalDebug; // Restore debug
-  } catch (error) {
-    console.error('Error converting page to markdown:', error);
-    process.exit(1);
-  }
-}
-
 program
   .name('notion-kit')
-  .description('Convert Notion pages to Markdown')
-  .version('1.0.0')
+  .description('A comprehensive CLI tool for interacting with Notion')
+  .version('1.0.0');
+
+// Get page as markdown
+program
+  .command('get-page')
+  .description('Convert a Notion page to Markdown')
   .argument('<page-id>', 'Notion page ID to convert')
   .action(async (pageId: string) => {
-    await convertPageToMarkdown(pageId);
+    await getPage(pageId);
+  });
+
+// List accessible pages
+program
+  .command('list-pages')
+  .description('List all accessible Notion pages')
+  .argument('[database-id]', 'Optional: Database ID to list pages from a specific database')
+  .option('-s, --since <time>', 'Filter pages modified since (e.g., 24h, 7d, 2024-01-01, yesterday)')
+  .option('-l, --limit <number>', 'Limit number of pages to display', '100')
+  .action(async (databaseId: string | undefined, options: { since?: string, limit?: string }) => {
+    await listPages(databaseId, options);
+  });
+
+// Search pages and databases
+program
+  .command('search')
+  .description('Search Notion pages and databases')
+  .argument('<query>', 'Search query')
+  .action(async (query: string) => {
+    await search(query);
+  });
+
+// Get page information
+program
+  .command('get-page-info')
+  .description('Get detailed information about a Notion page')
+  .argument('<page-id>', 'Notion page ID')
+  .action(async (pageId: string) => {
+    await getPageInfo(pageId);
+  });
+
+// Get database information and entries
+program
+  .command('get-db-info')
+  .description('Get Notion database information and entries')
+  .argument('<database-id>', 'Notion database ID')
+  .option('-l, --limit <number>', 'Limit number of entries to display', '10')
+  .action(async (databaseId: string, options: { limit?: string }) => {
+    const limit = options.limit ? parseInt(options.limit) : undefined;
+    await getDbInfo(databaseId, { limit });
   });
 
 program.parse();

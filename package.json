@@ -15,14 +15,14 @@
     "type": "git",
     "url": "git+https://github.com/fankaidev/notion-kit.git"
   },
-  "keywords": [],
+  "keywords": ["notion", "cli", "markdown", "converter", "api", "productivity"],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/fankaidev/notion-kit/issues"
   },
   "homepage": "https://github.com/fankaidev/notion-kit#readme",
-  "description": "",
+  "description": "A comprehensive CLI tool for interacting with Notion - convert pages to markdown, search, list pages, and manage databases",
   "dependencies": {
     "@notionhq/client": "^4.0.2",
     "commander": "^14.0.0",
