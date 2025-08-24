@@ -15,7 +15,14 @@
     "type": "git",
     "url": "git+https://github.com/fankaidev/notion-kit.git"
   },
-  "keywords": ["notion", "cli", "markdown", "converter", "api", "productivity"],
+  "keywords": [
+    "notion",
+    "cli",
+    "markdown",
+    "converter",
+    "api",
+    "productivity"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -26,9 +33,11 @@
   "dependencies": {
     "@notionhq/client": "^4.0.2",
     "commander": "^14.0.0",
+    "js-yaml": "^4.1.0",
     "notion-to-md": "4.0.0-alpha.7"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^24.3.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"

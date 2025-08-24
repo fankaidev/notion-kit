@@ -90,6 +90,90 @@ notion-kit get-db-info 12345678-1234-1234-1234-123456789abc
 notion-kit get-db-info 12345678-1234-1234-1234-123456789abc --limit 50
 ```
 
+### `export-pages [database-id]`
+Export multiple Notion pages to markdown files with YAML frontmatter containing page properties.
+
+**Options:**
+- `-s, --since <time>` - Filter pages modified since a specific time
+- `-l, --limit <number>` - Limit number of pages to export (default: 100)
+- `-o, --output <directory>` - Output directory for exported files (default: ./notion-export)
+
+**Features:**
+- **Organized by creation date**: Creates daily directories (YYYY-MM-DD) with readable filenames
+- **Smart file management**: Uses index files to track and update renamed pages automatically
+- **Incremental export**: Skips files that haven't changed since last export (compares last_edited_time)
+- **No duplicate files**: Title changes update existing files, removing old versions automatically
+- **Readable filenames**: Combines page ID and title (pageID8_title.md) for easy identification
+- Includes YAML frontmatter with all page properties including readable title
+- Preserves page metadata (creation time, last edited, URL, icon, cover)
+- Supports the same time filters as list-pages
+
+```bash
+# Export all accessible pages
+notion-kit export-pages
+
+# Export pages from a specific database
+notion-kit export-pages 12345678-1234-1234-1234-123456789abc
+
+# Export pages modified in the last 7 days
+notion-kit export-pages --since 7d
+
+# Export to a specific directory
+notion-kit export-pages --output ./my-exports
+
+# Export recent pages from a database to custom directory
+notion-kit export-pages abc123... --since 24h --output ./daily-backup
+
+# Export with all options
+notion-kit export-pages abc123... --since 7d --limit 50 --output ./exports
+```
+
+**Directory Structure:**
+```
+notion-export/
+├── 2024-01-15/
+│   ├── .index.json                    # Page index: pageID -> filename
+│   ├── a1b2c3d4_Project-Planning.md
+│   └── e5f6g7h8_Meeting-Notes.md
+├── 2024-01-16/
+│   ├── .index.json
+│   └── i9j0k1l2_Task-List.md
+└── 2024-01-20/
+    ├── .index.json
+    └── m3n4o5p6_API-Documentation.md
+```
+
+**Example Index File (.index.json):**
+```json
+{
+  "a1b2c3d4": "a1b2c3d4_Project-Planning.md",
+  "e5f6g7h8": "e5f6g7h8_Meeting-Notes.md"
+}
+```
+
+**Example File Content (2024-01-15/a1b2c3d4_Project-Planning.md):**
+```markdown
+---
+title: Project Planning
+notion_id: 12345678-1234-1234-1234-123456789abc
+created_time: '2024-01-15T10:30:00.000Z'
+last_edited_time: '2024-01-20T15:45:00.000Z'
+url: https://www.notion.so/Project-Planning-123456789abc
+icon: 📋
+properties:
+  Status: In Progress
+  Priority: High
+  Due Date: '2024-02-01'
+  Tags:
+    - planning
+    - Q1-2024
+---
+
+# Project Planning
+
+Content of the page...
+```
+
 ## Development
 
 ```bash
@@ -220,6 +304,9 @@ notion-kit get-page abc123... > my-page.md
 
 # View database structure and entries
 notion-kit get-db-info def456... --limit 20
+
+# Export pages to markdown files
+notion-kit export-pages --since 7d --output ./exports
 ```
 
 ## Error Handling

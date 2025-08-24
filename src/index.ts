@@ -6,7 +6,8 @@ import {
   listPages, 
   search, 
   getPageInfo, 
-  getDbInfo 
+  getDbInfo,
+  exportPages 
 } from './commands';
 
 const program = new Command();
@@ -63,6 +64,18 @@ program
   .action(async (databaseId: string, options: { limit?: string }) => {
     const limit = options.limit ? parseInt(options.limit) : undefined;
     await getDbInfo(databaseId, { limit });
+  });
+
+// Export pages to markdown files
+program
+  .command('export-pages')
+  .description('Export Notion pages to markdown files with YAML frontmatter')
+  .argument('[database-id]', 'Optional: Database ID to export pages from a specific database')
+  .option('-s, --since <time>', 'Filter pages modified since (e.g., 24h, 7d, 2024-01-01, yesterday)')
+  .option('-l, --limit <number>', 'Limit number of pages to export', '100')
+  .option('-o, --output <directory>', 'Output directory for exported files', './notion-export')
+  .action(async (databaseId: string | undefined, options: { since?: string, limit?: string, output?: string }) => {
+    await exportPages(databaseId, options);
   });
 
 program.parse();
